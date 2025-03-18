@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/lib/types";
-import { ArrowUpDown } from "lucide-react";
+import { Pencil, Trash2, ArrowUpDown } from "lucide-react";
 
 interface CourseTableProps {
   courses: Course[];
@@ -30,75 +30,69 @@ export function CourseTable({
   onSort 
 }: CourseTableProps) {
   return (
-    <div className="rounded-md border shadow-sm" role="region" aria-label="Course list">
+    <div className="rounded-md border">
       <Table>
         <TableHeader>
-          <TableRow className="hover:bg-transparent">
+          <TableRow>
             <TableHead 
-              className="font-semibold cursor-pointer hover:text-primary transition-colors"
+              className="cursor-pointer hover:bg-accent/50 transition-colors"
               onClick={() => onSort("title")}
-              role="columnheader"
-              aria-sort={sortField === "title" ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}
             >
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 Title
-                <ArrowUpDown className="h-4 w-4" aria-hidden="true" />
+                <ArrowUpDown className="h-4 w-4" />
                 {sortField === "title" && (
-                  <span className="text-xs" aria-hidden="true">
+                  <span className="text-xs">
                     {sortDirection === "asc" ? "↑" : "↓"}
                   </span>
                 )}
               </div>
             </TableHead>
-            <TableHead className="font-semibold">Description</TableHead>
+            <TableHead>Description</TableHead>
             <TableHead 
-              className="font-semibold cursor-pointer hover:text-primary transition-colors"
+              className="cursor-pointer hover:bg-accent/50 transition-colors"
               onClick={() => onSort("instructorName")}
-              role="columnheader"
-              aria-sort={sortField === "instructorName" ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}
             >
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 Instructor
-                <ArrowUpDown className="h-4 w-4" aria-hidden="true" />
+                <ArrowUpDown className="h-4 w-4" />
                 {sortField === "instructorName" && (
-                  <span className="text-xs" aria-hidden="true">
+                  <span className="text-xs">
                     {sortDirection === "asc" ? "↑" : "↓"}
                   </span>
                 )}
               </div>
             </TableHead>
-            <TableHead className="font-semibold">Duration</TableHead>
-            <TableHead className="text-right font-semibold">Actions</TableHead>
+            <TableHead>Duration</TableHead>
+            <TableHead className="w-[100px]" />
           </TableRow>
         </TableHeader>
         <TableBody>
           {courses.map((course) => (
-            <TableRow 
-              key={course.id}
-              className="transition-colors hover:bg-muted/50 cursor-pointer"
-              role="row"
-            >
+            <TableRow key={course.id}>
               <TableCell className="font-medium">{course.title}</TableCell>
-              <TableCell className="max-w-[300px] truncate">{course.description}</TableCell>
+              <TableCell>{course.description}</TableCell>
               <TableCell>{course.instructorName}</TableCell>
               <TableCell>{course.duration}</TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end space-x-2">
+              <TableCell>
+                <div className="flex items-center gap-2">
                   <Button
-                    variant="outline"
-                    size="sm"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => onEdit(course)}
+                    className="h-8 w-8"
                     aria-label={`Edit ${course.title}`}
                   >
-                    Edit
+                    <Pencil className="h-4 w-4" />
                   </Button>
                   <Button
-                    variant="destructive"
-                    size="sm"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => onDelete(course.id)}
+                    className="h-8 w-8 text-destructive hover:text-destructive"
                     aria-label={`Delete ${course.title}`}
                   >
-                    Delete
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </TableCell>

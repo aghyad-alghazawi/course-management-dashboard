@@ -126,7 +126,7 @@ function CourseDashboard() {
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <CardTitle>Course Management Dashboard</CardTitle>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <Button 
                 variant="outline" 
                 onClick={refreshCourses}

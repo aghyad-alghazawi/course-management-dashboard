@@ -8,13 +8,22 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { CourseFormData } from "@/lib/types";
 
+// Props interface for the CourseForm component
 interface CourseFormProps {
   onSubmit: (data: CourseFormData) => void;
   initialData?: CourseFormData;
   onCancel?: () => void;
 }
 
+/**
+ * CourseForm Component
+ * 
+ * A reusable form component for adding and editing courses.
+ * It handles both creation and editing of courses with proper validation
+ * and accessibility features.
+ */
 export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps) {
+  // Initialize form state with initial data or empty values
   const [formData, setFormData] = useState<CourseFormData>(
     initialData || {
       title: "",
@@ -24,6 +33,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
     }
   );
 
+  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
@@ -37,6 +47,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
           className="space-y-6"
           aria-label={initialData ? "Edit course form" : "Add new course form"}
         >
+          {/* Title Input Field */}
           <div className="space-y-2">
             <Label 
               htmlFor="title"
@@ -56,6 +67,8 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
               placeholder="Enter course title"
             />
           </div>
+
+          {/* Description Input Field */}
           <div className="space-y-2">
             <Label 
               htmlFor="description"
@@ -75,6 +88,8 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
               placeholder="Enter course description"
             />
           </div>
+
+          {/* Instructor Name Input Field */}
           <div className="space-y-2">
             <Label 
               htmlFor="instructorName"
@@ -94,6 +109,8 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
               placeholder="Enter instructor name"
             />
           </div>
+
+          {/* Duration Input Field */}
           <div className="space-y-2">
             <Label 
               htmlFor="duration"
@@ -113,6 +130,8 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
               placeholder="Enter course duration (e.g., 8 weeks)"
             />
           </div>
+
+          {/* Form Actions */}
           <div className="flex justify-end space-x-3 pt-4">
             {onCancel && (
               <Button 

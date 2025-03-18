@@ -1,9 +1,10 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { Course, CourseFormData } from "../types";
-import { api } from "../api";
+import React, { createContext, useContext, useState, useCallback } from "react";
+import { Course, CourseFormData } from "@/lib/types";
+import { mockCourses } from "@/lib/mock-data";
 
+// Define the shape of our context
 interface CourseContextType {
   courses: Course[];
   loading: boolean;
@@ -15,107 +16,122 @@ interface CourseContextType {
   refreshCourses: () => Promise<void>;
 }
 
+// Create the context with a default value
 const CourseContext = createContext<CourseContextType | undefined>(undefined);
 
-export function CourseProvider({ children }: { children: ReactNode }) {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const refreshCourses = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await api.getCourses();
-      setCourses(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch courses");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    refreshCourses();
-  }, []);
-
-  const addCourse = async (courseData: CourseFormData) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const newCourse = await api.addCourse(courseData);
-      setCourses([...courses, newCourse]);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add course");
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const editCourse = async (id: string, courseData: CourseFormData) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const updatedCourse = await api.updateCourse(id, courseData);
-      setCourses(
-        courses.map((course) =>
-          course.id === id ? updatedCourse : course
-        )
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update course");
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const deleteCourse = async (id: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      await api.deleteCourse(id);
-      setCourses(courses.filter((course) => course.id !== id));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete course");
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const searchCourses = (query: string) => {
-    const lowercaseQuery = query.toLowerCase();
-    return courses.filter(
-      (course) =>
-        course.title.toLowerCase().includes(lowercaseQuery) ||
-        course.instructorName.toLowerCase().includes(lowercaseQuery)
-    );
-  };
-
-  return (
-    <CourseContext.Provider
-      value={{
-        courses,
-        loading,
-        error,
-        addCourse,
-        editCourse,
-        deleteCourse,
-        searchCourses,
-        refreshCourses,
-      }}
-    >
-      {children}
-    </CourseContext.Provider>
-  );
-}
-
+// Custom hook to use the course context
 export function useCourse() {
   const context = useContext(CourseContext);
   if (context === undefined) {
     throw new Error("useCourse must be used within a CourseProvider");
   }
   return context;
+}
+
+// Provider component that wraps our app and provides course data
+export function CourseProvider({ children }: { children: React.ReactNode }) {
+  const [courses, setCourses] = useState<Course[]>(mockCourses);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Simulate API delay
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  // Add a new course
+  const addCourse = useCallback(async (course: CourseFormData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Simulate API call
+      await delay(1000);
+      const newCourse: Course = {
+        id: Math.random().toString(36).substr(2, 9),
+        ...course,
+      };
+      setCourses(prev => [...prev, newCourse]);
+    } catch (err) {
+      setError("Failed to add course");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Edit an existing course
+  const editCourse = useCallback(async (id: string, course: CourseFormData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Simulate API call
+      await delay(1000);
+      setCourses(prev =>
+        prev.map(c => (c.id === id ? { ...c, ...course } : c))
+      );
+    } catch (err) {
+      setError("Failed to edit course");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Delete a course
+  const deleteCourse = useCallback(async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Simulate API call
+      await delay(1000);
+      setCourses(prev => prev.filter(c => c.id !== id));
+    } catch (err) {
+      setError("Failed to delete course");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Search courses by title or instructor name
+  const searchCourses = useCallback((query: string) => {
+    const searchTerm = query.toLowerCase();
+    return courses.filter(
+      course =>
+        course.title.toLowerCase().includes(searchTerm) ||
+        course.instructorName.toLowerCase().includes(searchTerm)
+    );
+  }, [courses]);
+
+  // Refresh courses (simulate fetching from API)
+  const refreshCourses = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Simulate API call
+      await delay(1000);
+      setCourses(mockCourses);
+    } catch (err) {
+      setError("Failed to refresh courses");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Value object to be provided to consumers
+  const value = {
+    courses,
+    loading,
+    error,
+    addCourse,
+    editCourse,
+    deleteCourse,
+    searchCourses,
+    refreshCourses,
+  };
+
+  return (
+    <CourseContext.Provider value={value}>
+      {children}
+    </CourseContext.Provider>
+  );
 } 
