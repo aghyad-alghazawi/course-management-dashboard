@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { Course, CourseFormData } from "@/lib/types";
 import { mockCourses } from "@/lib/mock-data";
+import { toast } from "sonner";
 
 // Define the shape of our context
 interface CourseContextType {
@@ -49,8 +50,10 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
         ...course,
       };
       setCourses(prev => [...prev, newCourse]);
+      toast.success("Course added successfully");
     } catch (err) {
       setError("Failed to add course");
+      toast.error("Failed to add course");
       throw err;
     } finally {
       setLoading(false);
@@ -67,8 +70,10 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       setCourses(prev =>
         prev.map(c => (c.id === id ? { ...c, ...course } : c))
       );
+      toast.success("Course updated successfully");
     } catch (err) {
       setError("Failed to edit course");
+      toast.error("Failed to edit course");
       throw err;
     } finally {
       setLoading(false);
@@ -83,8 +88,10 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       // Simulate API call
       await delay(1000);
       setCourses(prev => prev.filter(c => c.id !== id));
+      toast.success("Course deleted successfully");
     } catch (err) {
       setError("Failed to delete course");
+      toast.error("Failed to delete course");
       throw err;
     } finally {
       setLoading(false);
@@ -109,8 +116,10 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       // Simulate API call
       await delay(1000);
       setCourses(mockCourses);
+      toast.success("Courses refreshed successfully");
     } catch (err) {
       setError("Failed to refresh courses");
+      toast.error("Failed to refresh courses");
       throw err;
     } finally {
       setLoading(false);

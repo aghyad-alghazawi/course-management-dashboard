@@ -73,7 +73,7 @@ export function CourseTable({
               <TableCell className="font-medium">{course.title}</TableCell>
               <TableCell>{course.description}</TableCell>
               <TableCell>{course.instructorName}</TableCell>
-              <TableCell>{course.duration}</TableCell>
+              <TableCell>{course.duration} hours</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
                   <Button

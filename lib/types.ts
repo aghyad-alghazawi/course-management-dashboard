@@ -3,12 +3,12 @@ export interface Course {
   title: string;
   description: string;
   instructorName: string;
-  duration: string;
+  duration: number;
 }
 
 export interface CourseFormData {
   title: string;
   description: string;
   instructorName: string;
-  duration: string;
+  duration: number;
 } 

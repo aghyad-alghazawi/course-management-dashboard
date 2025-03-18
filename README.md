@@ -4,22 +4,23 @@ A modern, responsive dashboard for managing programming courses at Tech Academy 
 
 ## Features
 
-- 📚 Course Management (CRUD operations)
-- 🔍 Search and filter courses
-- 📱 Fully responsive design
-- 🌓 Dark/Light mode support
-- ♿ Accessible UI components
-- 🔄 Real-time updates
-- ⚡ Fast and performant
+- Course Management (CRUD operations)
+- Search and filter courses
+- Fully responsive design
+- Dark/Light mode support
+- Accessible UI components
+- Real-time updates
+- Fast and performant
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 with App Router
-- **UI Components**: ShadCN UI
+- **Framework**: Next.js 15 with App Router
 - **Styling**: Tailwind CSS
 - **State Management**: React Context API
 - **Icons**: Lucide Icons
 - **Theme**: next-themes
+- **Package Manager**: bun
+
 
 ## Getting Started
 
@@ -30,12 +31,12 @@ git clone [repository-url]
 
 2. Install dependencies:
 ```bash
-npm install
+bun install
 ```
 
 3. Run the development server:
 ```bash
-npm run dev
+bun dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
@@ -47,13 +48,16 @@ npm run dev
 │   ├── layout.tsx      # Root layout with theme provider
 │   └── page.tsx        # Main dashboard page
 ├── components/
-│   ├── ui/            # ShadCN UI components
+│   ├── ui/            # UI components
 │   ├── course-form.tsx    # Course add/edit form
-│   ├── course-table.tsx   # Course listing table
-│   └── theme-toggle.tsx   # Theme switcher
+│   └── course-table.tsx   # Course listing table
 ├── lib/
 │   ├── context/       # Context providers
-│   ├── types/         # TypeScript types
+│       ├── course-context.tsx    # Course context provider
+│       └── theme-provider.tsx    # theme context provider
+│   ├── hooks/         # Custom hooks
+│   ├── types.ts       # TypeScript types
+│   ├── api.ts         # API functions ("Mock API")
 │   └── utils.ts       # Utility functions
 └── public/            # Static assets
 ```
@@ -65,7 +69,7 @@ npm run dev
    - Implemented reusable UI components using ShadCN UI
 
 2. **State Management**:
-   - Chose Context API over Redux for simpler state management
+   - Chose Context API over Redux for simpler state management (Redux is overkill for such cases)
    - Implemented a custom course context for global state
 
 3. **Styling**:
@@ -82,7 +86,7 @@ npm run dev
 5. **Performance**:
    - Used Next.js App Router for better performance
    - Implemented client-side state management for instant updates
-   - Added loading states for better UX
+   - Added loading states for better UX (& for api calls simulation)
 
 ## Future Improvements
 
@@ -102,14 +106,3 @@ npm run dev
    - Add integration tests
    - Add end-to-end tests
 
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.

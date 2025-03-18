@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import { ThemeProvider } from "@/lib/context/theme-provider";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Toaster } from "@/components/ui/sonner";
+
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,22 +14,22 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
+          defaultTheme="system"
+          enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <footer className="fixed bottom-4 right-4 z-50">
-            <ThemeToggle />
-          </footer>
+          <main>
+            {children}
+          </main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

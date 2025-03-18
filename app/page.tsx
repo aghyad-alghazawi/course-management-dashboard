@@ -28,6 +28,7 @@ import { Search, Loader2, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 type SortField = "title" | "instructorName" | null;
 type SortDirection = "asc" | "desc" | null;
@@ -86,9 +87,8 @@ function CourseDashboard() {
     try {
       await addCourse(data);
       setIsAddDialogOpen(false);
-    } catch (err) {
-      // Error is handled by the context
-      console.error(err);
+    } catch {
+      // Error is handled by the context with toast
     }
   };
 
@@ -103,9 +103,8 @@ function CourseDashboard() {
         await editCourse(selectedCourse.id, data);
         setIsEditDialogOpen(false);
         setSelectedCourse(null);
-      } catch (err) {
-        // Error is handled by the context
-        console.error(err);
+      } catch {
+        // Error is handled by the context with toast
       }
     }
   };
@@ -114,9 +113,8 @@ function CourseDashboard() {
     try {
       await deleteCourse(id);
       setIsDeleteDialogOpen(false);
-    } catch (err) {
-      // Error is handled by the context
-      console.error(err);
+    } catch {
+      // Error is handled by the context with toast
     }
   };
 
@@ -126,7 +124,7 @@ function CourseDashboard() {
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <CardTitle>Course Management Dashboard</CardTitle>
-            <div className="flex items-center gap-2">
+            <div className="w-full sm:w-auto flex justify-between gap-2">
               <Button 
                 variant="outline" 
                 onClick={refreshCourses}
@@ -229,18 +227,21 @@ function CourseDashboard() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="transition-all hover:scale-105 hover:shadow-sm">
+            <AlertDialogCancel>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => selectedCourse && handleDeleteCourse(selectedCourse.id)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-all hover:scale-105 hover:shadow-sm"
+              className="bg-background border-[1.5px] border-destructive text-destructive hover:bg-destructive hover:text-background"
             >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <Card className="fixed h-12 px-4 w-auto place-content-center bottom-4 left-4 z-50">
+        <ThemeToggle />
+      </Card>
     </main>
   );
 }

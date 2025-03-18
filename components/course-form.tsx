@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { CourseFormData } from "@/lib/types";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 // Props interface for the CourseForm component
 interface CourseFormProps {
@@ -29,7 +30,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
       title: "",
       description: "",
       instructorName: "",
-      duration: "",
+      duration: 0,
     }
   );
 
@@ -39,9 +40,16 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
     onSubmit(formData);
   };
 
+  const handleDurationChange = (value: number) => {
+    setFormData(prev => ({
+      ...prev,
+      duration: Math.max(1, value)
+    }));
+  };
+
   return (
-    <Card>
-      <CardContent className="pt-6">
+    <Card className="w-full max-w-lg mx-auto">
+      <CardContent className="p-6">
         <form 
           onSubmit={handleSubmit} 
           className="space-y-6"
@@ -52,6 +60,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
             <Label 
               htmlFor="title"
               id="title-label"
+              className="text-sm font-medium"
             >
               Title
             </Label>
@@ -63,7 +72,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
                 setFormData({ ...formData, title: e.target.value })
               }
               required
-              className="transition-all focus:ring-2 focus:ring-primary/20"
+              className="w-full transition-all focus-visible:ring-2 focus-visible:ring-primary/20 text-base sm:text-sm"
               placeholder="Enter course title"
             />
           </div>
@@ -73,6 +82,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
             <Label 
               htmlFor="description"
               id="description-label"
+              className="text-sm font-medium"
             >
               Description
             </Label>
@@ -84,7 +94,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
                 setFormData({ ...formData, description: e.target.value })
               }
               required
-              className="transition-all focus:ring-2 focus:ring-primary/20 min-h-[100px]"
+              className="w-full min-h-[120px] transition-all focus-visible:ring-2 focus-visible:ring-primary/20 text-base sm:text-sm resize-y"
               placeholder="Enter course description"
             />
           </div>
@@ -94,6 +104,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
             <Label 
               htmlFor="instructorName"
               id="instructor-label"
+              className="text-sm font-medium"
             >
               Instructor Name
             </Label>
@@ -105,7 +116,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
                 setFormData({ ...formData, instructorName: e.target.value })
               }
               required
-              className="transition-all focus:ring-2 focus:ring-primary/20"
+              className="w-full transition-all focus-visible:ring-2 focus-visible:ring-primary/20 text-base sm:text-sm"
               placeholder="Enter instructor name"
             />
           </div>
@@ -115,30 +126,59 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
             <Label 
               htmlFor="duration"
               id="duration-label"
+              className="text-sm font-medium"
             >
-              Duration
+              Duration (hours)
             </Label>
-            <Input
-              id="duration"
-              aria-labelledby="duration-label"
-              value={formData.duration}
-              onChange={(e) =>
-                setFormData({ ...formData, duration: e.target.value })
-              }
-              required
-              className="transition-all focus:ring-2 focus:ring-primary/20"
-              placeholder="Enter course duration (e.g., 8 weeks)"
-            />
+            <div className="relative">
+              <Input
+                id="duration"
+                type="number"
+                min="1"
+                step="1"
+                aria-labelledby="duration-label"
+                value={formData.duration}
+                onChange={(e) =>
+                  handleDurationChange(parseInt(e.target.value) || 0)
+                }
+                required
+                className="w-full pr-12 transition-all focus-visible:ring-2 focus-visible:ring-primary/20 text-base sm:text-sm"
+                placeholder="Enter course duration in hours"
+              />
+              <div className="absolute right-0 top-0 h-full flex flex-col border-l border-input">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-1/2 w-12 px-0 hover:bg-accent hover:text-accent-foreground rounded-none rounded-tr-md"
+                  onClick={() => handleDurationChange(formData.duration + 1)}
+                  aria-label="Increase duration"
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-1/2 w-12 px-0 hover:bg-accent hover:text-accent-foreground rounded-none rounded-br-md border-t"
+                  onClick={() => handleDurationChange(Math.max(1, formData.duration - 1))}
+                  aria-label="Decrease duration"
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           </div>
 
           {/* Form Actions */}
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6">
             {onCancel && (
               <Button 
                 type="button" 
                 variant="outline" 
                 onClick={onCancel}
                 aria-label="Cancel form"
+                className="w-full sm:w-auto"
               >
                 Cancel
               </Button>
@@ -146,6 +186,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
             <Button 
               type="submit"
               aria-label={initialData ? "Update course" : "Add course"}
+              className="w-full sm:w-auto"
             >
               {initialData ? "Update Course" : "Add Course"}
             </Button>
