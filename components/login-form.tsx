@@ -12,6 +12,24 @@ interface LoginFormProps {
   onLogin: () => void;
 }
 
+/**
+ * LoginForm Component
+ * 
+ * A form component for user authentication. It provides a simple interface
+ * for users to enter their credentials and handles the login process.
+ * 
+ * Features:
+ * - Username and password input fields
+ * - Form validation
+ * - Success/error toast notifications
+ * - Responsive design
+ * - Accessibility support
+ * 
+ * @example
+ * ```tsx
+ * <LoginForm onLogin={handleSuccessfulLogin} />
+ * ```
+ */
 export function LoginForm({ onLogin }: LoginFormProps) {
   const [credentials, setCredentials] = useState({
     username: "",

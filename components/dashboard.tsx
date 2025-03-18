@@ -29,9 +29,30 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
+
 type SortDirection = "asc" | "desc" | null;
 type SortField = "title" | "instructorName" | null;
 
+/**
+ * Dashboard Component
+ * 
+ * The main dashboard component for managing courses. It provides a comprehensive
+ * interface for viewing, adding, editing, and deleting courses, with features
+ * for searching and sorting.
+ * 
+ * Features:
+ * - Course listing with responsive table/accordion views
+ * - Course search functionality
+ * - Course sorting by title and instructor
+ * - Add/Edit/Delete course operations
+ * - Loading states and error handling
+ * - Accessibility support
+ * 
+ * @example
+ * ```tsx
+ * <Dashboard />
+ * ```
+ */
 export function Dashboard() {
   const { 
     courses, 
@@ -118,7 +139,7 @@ export function Dashboard() {
   };
 
   return (
-    <main className="container mx-auto my-4 py-10 px-4 sm:px-6 lg:px-8">
+    <main className="container mx-auto my-4 p-4 sm:px-6 lg:px-8">
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

@@ -8,8 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { CourseFormData } from "@/lib/types";
 import { ChevronUp, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-// Props interface for the CourseForm component
 interface CourseFormProps {
   onSubmit: (data: CourseFormData) => void;
   initialData?: CourseFormData;
@@ -19,9 +19,29 @@ interface CourseFormProps {
 /**
  * CourseForm Component
  * 
- * A reusable form component for adding and editing courses.
- * It handles both creation and editing of courses with proper validation
- * and accessibility features.
+ * A form component for creating and editing courses. It provides a user interface
+ * for inputting course details including title, description, instructor name, and duration.
+ * The form includes validation and accessibility features.
+ * 
+ * Features:
+ * - Input validation for required fields
+ * - Duration input with increment/decrement controls
+ * - Responsive design
+ * - Accessibility support with ARIA labels
+ * - Support for both create and edit modes
+ * 
+ * @example
+ * ```tsx
+ * // Create mode
+ * <CourseForm onSubmit={handleAddCourse} />
+ * 
+ * // Edit mode
+ * <CourseForm 
+ *   initialData={existingCourse}
+ *   onSubmit={handleUpdateCourse}
+ *   onCancel={handleCancel}
+ * />
+ * ```
  */
 export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps) {
   // Initialize form state with initial data or empty values
@@ -217,7 +237,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
           </div>
 
           {/* Form Actions */}
-          <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 pt-6">
+          <div className={cn("flex flex-col-reverse sm:flex-row gap-3 pt-6", initialData ? "justify-between" : "justify-end")}>
             {onCancel && (
               <Button 
                 type="button" 

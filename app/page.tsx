@@ -41,16 +41,16 @@ export default function Home() {
 
   return (
     <CourseProvider>
-      <div className="container mx-auto mt-8 px-4 sm:px-6 lg:px-8">
-        <Card className="flex justify-between items-center px-6 py-4 -mb-4">
+      <div className="container h-16 mx-auto mt-12 px-4 sm:px-6 lg:px-8 flex flex-row justify-between items-center gap-6">
+        <Card className="h-full flex flex-1 justify-between items-center px-6 py-4">
           <h1 className="text-2xl text-center font-bold">Tech Academy</h1>
           <LogoutButton onLogout={handleLogout} />
         </Card>
+        <Card className="h-full flex place-content-center px-6 py-4">
+          <ThemeToggle />
+        </Card>
       </div>
       <Dashboard />
-      <Card className="fixed bottom-4 right-4 z-10 bg-card p-4 rounded-lg">
-        <ThemeToggle />
-      </Card>
     </CourseProvider>
   );
 }

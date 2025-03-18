@@ -27,11 +27,23 @@ interface CourseTableProps {
   onSort: (field: "title" | "instructorName") => void;
 }
 
-function MobileCourseRow({ course, onEdit, onDelete }: { 
-  course: Course; 
+interface MobileCourseRowProps {
+  course: Course;
   onEdit: (course: Course) => void;
   onDelete: (id: string) => void;
-}) {
+}
+
+/**
+ * MobileCourseRow Component
+ * 
+ * A responsive component that displays course information in an accordion format
+ * for mobile devices. It shows the course title in the header and expands to show
+ * additional details when clicked.
+ * 
+ * @param props - Component props
+ * @returns A mobile-friendly course row component
+ */
+function MobileCourseRow({ course, onEdit, onDelete }: MobileCourseRowProps) {
   return (
     <AccordionItem value={course.id} className="border-b">
       <AccordionTrigger className="flex items-center justify-between py-4 px-4 hover:bg-accent/50 transition-colors">
@@ -77,6 +89,31 @@ function MobileCourseRow({ course, onEdit, onDelete }: {
   );
 }
 
+/**
+ * CourseTable Component
+ * 
+ * A responsive table component for displaying course information. It provides
+ * different layouts for mobile and desktop views, with sorting capabilities
+ * and actions for editing and deleting courses.
+ * 
+ * Features:
+ * - Responsive design with mobile accordion view
+ * - Sortable columns (title and instructor)
+ * - Edit and delete actions for each course
+ * - Accessibility support
+ * 
+ * @example
+ * ```tsx
+ * <CourseTable
+ *   courses={courses}
+ *   onEdit={handleEditCourse}
+ *   onDelete={handleDeleteCourse}
+ *   sortField="title"
+ *   sortDirection="asc"
+ *   onSort={handleSort}
+ * />
+ * ```
+ */
 export function CourseTable({ 
   courses, 
   onEdit, 
