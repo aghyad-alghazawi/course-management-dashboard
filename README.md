@@ -15,7 +15,7 @@ A modern, responsive dashboard for managing programming courses at Tech Academy 
 
 ## Tech Stack
 
-- Next.js 14
+- Next.js
 - Tailwind CSS
 - ShadCN UI
 - TypeScript
