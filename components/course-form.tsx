@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,9 +30,11 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
       title: "",
       description: "",
       instructorName: "",
-      duration: 0,
+      duration: 1,
     }
   );
+  const incrementInterval = useRef<NodeJS.Timeout | undefined>(undefined);
+  const decrementInterval = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -45,6 +47,42 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
       ...prev,
       duration: Math.max(1, value)
     }));
+  };
+
+  const startIncrement = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    handleDurationChange(formData.duration + 1);
+    incrementInterval.current = setInterval(() => {
+      setFormData(prev => ({
+        ...prev,
+        duration: prev.duration + 1
+      }));
+    }, 150);
+  };
+
+  const startDecrement = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    handleDurationChange(Math.max(1, formData.duration - 1));
+    decrementInterval.current = setInterval(() => {
+      setFormData(prev => ({
+        ...prev,
+        duration: Math.max(1, prev.duration - 1)
+      }));
+    }, 150);
+  };
+
+  const stopIncrement = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    if (incrementInterval.current) {
+      clearInterval(incrementInterval.current);
+    }
+  };
+
+  const stopDecrement = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    if (decrementInterval.current) {
+      clearInterval(decrementInterval.current);
+    }
   };
 
   return (
@@ -151,7 +189,11 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
                   variant="ghost"
                   size="icon"
                   className="h-1/2 w-12 px-0 hover:bg-accent hover:text-accent-foreground rounded-none rounded-tr-md"
-                  onClick={() => handleDurationChange(formData.duration + 1)}
+                  onMouseDown={startIncrement}
+                  onMouseUp={stopIncrement}
+                  onMouseLeave={stopIncrement}
+                  onTouchStart={startIncrement}
+                  onTouchEnd={stopIncrement}
                   aria-label="Increase duration"
                 >
                   <ChevronUp className="h-4 w-4" />
@@ -161,7 +203,11 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
                   variant="ghost"
                   size="icon"
                   className="h-1/2 w-12 px-0 hover:bg-accent hover:text-accent-foreground rounded-none rounded-br-md border-t"
-                  onClick={() => handleDurationChange(Math.max(1, formData.duration - 1))}
+                  onMouseDown={startDecrement}
+                  onMouseUp={stopDecrement}
+                  onMouseLeave={stopDecrement}
+                  onTouchStart={startDecrement}
+                  onTouchEnd={stopDecrement}
                   aria-label="Decrease duration"
                 >
                   <ChevronDown className="h-4 w-4" />
@@ -171,7 +217,7 @@ export function CourseForm({ onSubmit, initialData, onCancel }: CourseFormProps)
           </div>
 
           {/* Form Actions */}
-          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6">
+          <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 pt-6">
             {onCancel && (
               <Button 
                 type="button" 

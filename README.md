@@ -4,23 +4,21 @@ A modern, responsive dashboard for managing programming courses at Tech Academy 
 
 ## Features
 
-- Course Management (CRUD operations)
-- Search and filter courses
-- Fully responsive design
-- Dark/Light mode support
-- Accessible UI components
-- Real-time updates
-- Fast and performant
+- Course Management (CRUD)
+- Responsive design (mobile-first)
+- Search & sort functionality
+- Dark/Light mode
+- Accessible components
+- Session persistence
+- Form validation
+- Toast notifications
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 with App Router
-- **Styling**: Tailwind CSS
-- **State Management**: React Context API
-- **Icons**: Lucide Icons
-- **Theme**: next-themes
-- **Package Manager**: bun
-
+- Next.js 14
+- Tailwind CSS
+- ShadCN UI
+- TypeScript
 
 ## Getting Started
 
@@ -39,7 +37,9 @@ bun install
 bun dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) and login with:
+- Username: admin
+- Password: admin
 
 ## Project Structure
 
@@ -50,43 +50,29 @@ bun dev
 ├── components/
 │   ├── ui/            # UI components
 │   ├── course-form.tsx    # Course add/edit form
-│   └── course-table.tsx   # Course listing table
+│   ├── course-table.tsx   # Course listing table
+│   ├── dashboard.tsx      # Dashboard block
+│   ├── login-form.tsx     # Login form
+│   └── logout-button.tsx  # Logout button
 ├── lib/
 │   ├── context/       # Context providers
 │       ├── course-context.tsx    # Course context provider
 │       └── theme-provider.tsx    # theme context provider
-│   ├── hooks/         # Custom hooks
+│   ├── mock-data.ts   # Mock course data
 │   ├── types.ts       # TypeScript types
 │   ├── api.ts         # API functions ("Mock API")
 │   └── utils.ts       # Utility functions
 └── public/            # Static assets
 ```
 
-## Design Choices
+## Development
 
-1. **Component Architecture**:
-   - Used a modular approach with separate components for forms, tables, and UI elements
-   - Implemented reusable UI components using ShadCN UI
-
-2. **State Management**:
-   - Chose Context API over Redux for simpler state management (Redux is overkill for such cases)
-   - Implemented a custom course context for global state
-
-3. **Styling**:
-   - Used Tailwind CSS for utility-first styling
-   - Implemented responsive design using Tailwind's breakpoint classes
-   - Added dark mode support using next-themes
-
-4. **Accessibility**:
-   - Used semantic HTML elements
-   - Added ARIA labels and roles
-   - Ensured keyboard navigation support
-   - Implemented proper focus management
-
-5. **Performance**:
-   - Used Next.js App Router for better performance
-   - Implemented client-side state management for instant updates
-   - Added loading states for better UX (& for api calls simulation)
+- Built with TypeScript and modern React patterns
+- Uses ShadCN for consistent UI components
+- Mobile-first responsive design
+- Context API for state management
+- Proper form validation and error handling
+- Accessible following WCAG guidelines
 
 ## Future Improvements
 
