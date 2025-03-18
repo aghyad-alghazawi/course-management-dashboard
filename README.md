@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Course Management Dashboard
+
+A modern, responsive course management dashboard built with Next.js, ShadCN, and Tailwind CSS. This application allows administrators to manage course information with a clean and intuitive interface.
+
+## Features
+
+- 📚 Course listing with detailed information
+- ➕ Add new courses
+- ✏️ Edit existing courses
+- 🗑️ Delete courses with confirmation
+- 🔍 Search courses by title or instructor
+- 📱 Fully responsive design
+- 🎨 Modern UI with ShadCN components
+
+## Tech Stack
+
+- **Framework:** Next.js 14
+- **UI Components:** ShadCN
+- **Styling:** Tailwind CSS
+- **State Management:** React Context API
+- **Type Safety:** TypeScript
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+```bash
+git clone <repository-url>
+```
 
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+# or
+bun install
+```
+
+3. Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
 # or
-pnpm dev
-# or
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+├── app/
+│   └── page.tsx              # Main dashboard page
+├── components/
+│   ├── course-form.tsx       # Course form component
+│   └── course-table.tsx      # Course table component
+├── lib/
+│   ├── context/
+│   │   └── course-context.tsx # Course state management
+│   ├── types.ts             # TypeScript interfaces
+│   └── mock-data.ts         # Mock course data
+└── public/                  # Static assets
+```
 
-## Learn More
+## Features in Detail
 
-To learn more about Next.js, take a look at the following resources:
+### Course Management
+- View all courses in a clean, tabular format
+- Add new courses with title, description, instructor name, and duration
+- Edit existing course information
+- Delete courses with a confirmation dialog
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Search Functionality
+- Real-time search across course titles and instructor names
+- Instant filtering of course list
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### User Interface
+- Modern, clean design using ShadCN components
+- Responsive layout that works on all devices
+- Intuitive modals for adding and editing courses
+- Confirmation dialogs for destructive actions
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

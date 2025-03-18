@@ -1,103 +1,254 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { CourseForm } from "@/components/course-form";
+import { CourseTable } from "@/components/course-table";
+import { CourseProvider, useCourse } from "@/lib/context/course-context";
+import { Course, CourseFormData } from "@/lib/types";
+import { Search, Loader2, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+
+type SortField = "title" | "instructorName" | null;
+type SortDirection = "asc" | "desc" | null;
+
+function CourseDashboard() {
+  const { 
+    courses, 
+    addCourse, 
+    editCourse, 
+    deleteCourse, 
+    searchCourses,
+    loading,
+    error,
+    refreshCourses
+  } = useCourse();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [sortField, setSortField] = useState<SortField>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+
+  const filteredCourses = searchQuery
+    ? searchCourses(searchQuery)
+    : courses;
+
+  const sortedCourses = [...filteredCourses].sort((a, b) => {
+    if (!sortField || !sortDirection) return 0;
+    
+    const aValue = a[sortField].toLowerCase();
+    const bValue = b[sortField].toLowerCase();
+    
+    if (sortDirection === "asc") {
+      return aValue.localeCompare(bValue);
+    } else {
+      return bValue.localeCompare(aValue);
+    }
+  });
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      if (sortDirection === "asc") {
+        setSortDirection("desc");
+      } else if (sortDirection === "desc") {
+        setSortField(null);
+        setSortDirection(null);
+      }
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const handleAddCourse = async (data: CourseFormData) => {
+    try {
+      await addCourse(data);
+      setIsAddDialogOpen(false);
+    } catch (err) {
+      // Error is handled by the context
+      console.error(err);
+    }
+  };
+
+  const handleEditCourse = (course: Course) => {
+    setSelectedCourse(course);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateCourse = async (data: CourseFormData) => {
+    if (selectedCourse) {
+      try {
+        await editCourse(selectedCourse.id, data);
+        setIsEditDialogOpen(false);
+        setSelectedCourse(null);
+      } catch (err) {
+        // Error is handled by the context
+        console.error(err);
+      }
+    }
+  };
+
+  const handleDeleteCourse = async (id: string) => {
+    try {
+      await deleteCourse(id);
+      setIsDeleteDialogOpen(false);
+    } catch (err) {
+      // Error is handled by the context
+      console.error(err);
+    }
+  };
+
+  return (
+    <main className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+      <Card>
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <CardTitle>Course Management Dashboard</CardTitle>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={refreshCourses}
+                disabled={loading}
+                aria-label="Refresh course list"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" aria-hidden="true" />
+                ) : null}
+                Refresh
+              </Button>
+              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    aria-label="Add new course"
+                  >
+                    Add Course
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Add New Course</DialogTitle>
+                  </DialogHeader>
+                  <CourseForm onSubmit={handleAddCourse} />
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-6" role="alert">
+              <AlertCircle className="h-4 w-4" aria-hidden="true" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="relative mb-8">
+            <Label htmlFor="search" className="sr-only">Search courses</Label>
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" aria-hidden="true" />
+            <Input
+              id="search"
+              placeholder="Search courses by title or instructor..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 transition-all focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+
+          {loading ? (
+            <div 
+              className="flex justify-center items-center h-64"
+              role="status"
+              aria-label="Loading courses"
+            >
+              <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden="true" />
+            </div>
+          ) : (
+            <CourseTable
+              courses={sortedCourses}
+              onEdit={handleEditCourse}
+              onDelete={(id) => {
+                setSelectedCourse(courses.find((c) => c.id === id) || null);
+                setIsDeleteDialogOpen(true);
+              }}
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+            />
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Course</DialogTitle>
+          </DialogHeader>
+          {selectedCourse && (
+            <CourseForm
+              initialData={selectedCourse}
+              onSubmit={handleUpdateCourse}
+              onCancel={() => {
+                setIsEditDialogOpen(false);
+                setSelectedCourse(null);
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              course.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="transition-all hover:scale-105 hover:shadow-sm">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => selectedCourse && handleDeleteCourse(selectedCourse.id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-all hover:scale-105 hover:shadow-sm"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </main>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    <CourseProvider>
+      <CourseDashboard />
+    </CourseProvider>
   );
 }
