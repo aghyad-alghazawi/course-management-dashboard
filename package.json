@@ -2,11 +2,18 @@
   "name": "course-management-dashboard",
   "version": "1.0.0",
   "private": true,
+  "author": "Aghyad Alghazawi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aghyad-alghazawi/course-management-dashboard"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check": "biome check",
+    "format": "biome format"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.3",
@@ -32,14 +39,15 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@biomejs/biome": "1.9.4",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.2.2",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
