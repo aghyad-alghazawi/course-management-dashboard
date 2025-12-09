@@ -83,8 +83,7 @@ Open [http://localhost:3000](http://localhost:3000) and login with:
 
 2. Features:
    - Add course categories
-   - Add user authentication
-   - Add course ratings and reviews
+   - Better user authentication
 
 3. Testing:
    - Add unit tests
